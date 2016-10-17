@@ -1,0 +1,14 @@
+{
+  "name": "thesys-controller",
+  "version": "1.0.0",
+  "description": "Controller for arduino modules",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luis Balderrama",
+  "license": "ISC",
+  "dependencies": {
+    "serialport": "^4.0.3"
+  }
+}

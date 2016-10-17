@@ -18,31 +18,27 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) {
-    Serial.println("Waiting for input...");
-    receiverMode = Serial.read();
+    receiverMode = Serial.parseInt();
   }
   
   receiverId = analogRead(receiverPin);
   data = digitalRead(dataPin);
 
-  Serial.print("Executing mode ");
-  Serial.println(receiverMode);
-
   switch(receiverMode) {
     case RECEIVE: receiveData(); break;
-    case DISCOVER: discoverDevices(); break;
+    case DISCOVER: discoverDevices(receiverId); break;
     case REGISTER: registerDevice(); break;
+    default: receiverMode = 0;
+             receiveData();
   }
-
-  delay(1000);
 }
 
 void receiveData() {
   Serial.println("Receiving data...");
 }
 
-void discoverDevices() {
-   Serial.println("Discovering data ...");
+void discoverDevices(int receiverId) {
+   Serial.println(receiverId);
 }
 
 void registerDevice() {
