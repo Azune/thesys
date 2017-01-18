@@ -5,19 +5,18 @@
         let SerialPort = require('serialport'),
             Buffer = {
                 data: [],
-                length: 0,
                 reading: false
             },
             Serial = new SerialPort('COM3', {
                 baudRate: 9600,
                 autoOpen: false
-            });
+            }),
+            devices = [];
 
         console.log('Connecting with firmata...');
 
         Serial.on('open', () => {
             console.log('Firmata connected to COM3.');
-            Serial.flush();
         });
 
         Serial.on('error', (error) => {
@@ -25,26 +24,29 @@
         });
 
         Serial.on('data', (data) => {
-            let bytes = [],
-                startOfBuffer = data.indexOf(10),
-                endOfBuffer = data.indexOf(13),
-                index;
-
-            for (index = 0; index < data.length; index += 1) {
-                bytes.push(data[index]);
+            let hex = data.toString('hex'),
+                index = 0;
+            
+            for (index; index < hex.length; index += 2) {
+                let value = hex[index].concat(hex[index + 1]);
+                Buffer.data.push(value);
             }
-
-            /*if (Buffer.reading === false && bytes.contains(10)) {
-                Buffer.reading = true;
-            } else if (Buffer.reading === true && bytes.contains(13)) {
-                Buffer.reading = false;
-                console.log(Buffer.data);
-            } else if (Buffer.reading) {
-                Buffer.push();
-            }*/
-            console.log(data);
+            
+            BufferRead();
         });
 
+        function BufferRead() {
+            let ls = '0a',
+                le = '0d',
+                data = Buffer.data,
+                line;
+            
+            data.splice(0, data.indexOf(ls));
+            line = data.splice(0, data.indexOf(le));
+            
+            console.log(line);
+        }
+        
         Serial.open();
     }()
 );
